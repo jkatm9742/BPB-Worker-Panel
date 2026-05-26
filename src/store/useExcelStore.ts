@@ -6,9 +6,11 @@ interface ExcelStore {
   mergedData: MergedData | null;
   analysisResults: AnalysisResult[];
   mergeConfig: MergeConfig;
+  selectedChartColumn: string | null; // 新增：当前选择用于图表的列
   addFile: (file: ExcelFileData) => void;
   removeFile: (fileId: string) => void;
   setMergeConfig: (config: Partial<MergeConfig>) => void;
+  setSelectedChartColumn: (column: string | null) => void; // 新增
   mergeData: () => void;
   analyzeData: () => void;
   clearAll: () => void;
@@ -19,6 +21,7 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
   files: [],
   mergedData: null,
   analysisResults: [],
+  selectedChartColumn: null,
   mergeConfig: {
     type: 'append',
     selectedSheets: [],
@@ -32,6 +35,7 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
     files: state.files.filter(f => f.id !== fileId),
     mergedData: null,
     analysisResults: [],
+    selectedChartColumn: null,
     mergeConfig: {
       ...state.mergeConfig,
       selectedSheets: state.mergeConfig.selectedSheets.filter(s => s.fileId !== fileId)
@@ -41,6 +45,8 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
   setMergeConfig: (config) => set((state) => ({
     mergeConfig: { ...state.mergeConfig, ...config }
   })),
+
+  setSelectedChartColumn: (column) => set({ selectedChartColumn: column }),
 
   getSheetData: (fileId, sheetName) => {
     const state = get();
@@ -126,7 +132,7 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
       };
     }
 
-    set({ mergedData });
+    set({ mergedData, selectedChartColumn: mergedData.headers[0] || null });
   },
 
   analyzeData: () => {
@@ -140,10 +146,19 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
       const values = rows.map(row => row[columnName]).filter(v => v !== null && v !== undefined && v !== '');
       const uniqueValues = new Set(values.map(v => String(v)));
 
+      // 统计每个值的出现次数
+      const valueCounts: Record<string, number> = {};
+      values.forEach(v => {
+        const key = String(v);
+        valueCounts[key] = (valueCounts[key] || 0) + 1;
+      });
+
       const result: AnalysisResult = {
         columnName,
         count: values.length,
         uniqueCount: uniqueValues.size,
+        valueCounts,
+        isNumeric: false,
       };
 
       // 尝试数值统计
@@ -159,6 +174,7 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
         result.avg = result.sum / numericValues.length;
         result.min = Math.min(...numericValues);
         result.max = Math.max(...numericValues);
+        result.isNumeric = true;
       }
 
       results.push(result);
@@ -171,6 +187,7 @@ export const useExcelStore = create<ExcelStore>((set, get) => ({
     files: [],
     mergedData: null,
     analysisResults: [],
+    selectedChartColumn: null,
     mergeConfig: {
       type: 'append',
       selectedSheets: [],

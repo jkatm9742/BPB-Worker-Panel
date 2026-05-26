@@ -26,6 +26,9 @@ export interface AnalysisResult {
   avg?: number;
   min?: number;
   max?: number;
+  // 新增字段：列值统计
+  valueCounts?: Record<string, number>;
+  isNumeric?: boolean;
 }
 
 export interface MergedData {
