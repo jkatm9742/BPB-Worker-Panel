@@ -1,72 +1,57 @@
-<h1 align="center">💦 BPB Panel</h1>
+# React + TypeScript + Vite
 
-### 🌏 Readme in [Farsi](README_fa.md)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-<p align="center">
-  <img src="docs/assets/images/Panel.jpg">
-</p>
-<br>
+Currently, two official plugins are available:
 
-## Introduction
-This project is dedicated to developing a user panel for the [Cloudflare-workers/pages proxy script](https://github.com/yonggekkk/Cloudflare-workers-pages-vless) created by [yonggekkk](https://github.com/yonggekkk). The panel offers two deployment options: 
-- **Worker** deployment
-- **Pages** deployment
-<br>
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-🌟 If you found **BPB Panel** valuable, Your donations make all the difference 🌟
-- **USDT (BEP20):** `0x111EFF917E7cf4b0BfC99Edffd8F1AbC2b23d158`
+## Expanding the ESLint configuration
 
-## Features
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-1. **Free**: No cost involved.
-2. **User-Friendly Panel:** Designed for easy navigation, configuration and usage.
-3. **Support Fragment:** Provides support for fragment functionality.
-4. **Block Ads. and Porn (Optional)**
-5. **Bypass Iran and LAN (Optional)**
-6. **Full routing rules:** Bypassing Iran, Blocking Ads, Malwares, Phishing... for Sing-box.
-7. **Chain Proxy:** Capable of adding a chain proxy to fix IP.
-8. **Supports Wide Range of Clients:** Offers subscription links for Xray and Sing-box core clients.
-9. **Subscription Link (JSON):** Provides subscription link for JSON configs.
-10. **Password-Protected Panel:** Secure your panel with password protection.
-11. **Custom Cloudflare Clean IP:** Ability to use online scanner and setting up clean IP-domains.
-12. **Warp configs:** Provides Warp and Warp on Warp subscription.
-<br>
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```
 
-## How to use:
-- [Installation (Pages)](docs/pages_installation_fa.md)
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-- [Installation (Worker)](docs/worker_installation_fa.md)
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-- [How to use](docs/configuration_fa.md)
-
-- [FAQ](docs/faq.md)
-<br>
-
-## Supported Clients
-| Client  | Version | Fragment |
-| :-------------: | :-------------: | :-------------: |
-| **v2rayNG**  | 1.8.19 or higher  | :heavy_check_mark: |
-| **v2rayN**  | 6.42 or higher  | :heavy_check_mark: |
-| **Nekobox**  |   | :x: |
-| **Sing-box**  | 1.8.10 or higher  | :x: |
-| **Streisand**  |   | :heavy_check_mark: |
-| **V2Box**  |   | :x: |
-| **Shadowrocket**  |   | :x: |
-| **Nekoray**  |   | :heavy_check_mark: |
-| **Hiddify**  |   | :x: |
-
-
----
-
-## Stargazers Over Time
-[![Stargazers Over Time](https://starchart.cc/bia-pain-bache/BPB-Worker-Panel.svg?variant=adaptive)](https://starchart.cc/bia-pain-bache/BPB-Worker-Panel)
-
----
-
-### Special Thanks
-- CF-vless code author [3Kmfi6HP](https://github.com/3Kmfi6HP/EDtunnel)
-- CF preferred IP program author [badafans](https://github.com/badafans/Cloudflare-IP-SpeedTest), [XIU2](https://github.com/XIU2/CloudflareSpeedTest)
-
----
-
-For a detailed tutorial on the core script, please refer to [Yongge’s blog and video tutorials](https://ygkkk.blogspot.com/2023/07/cfworkers-vless.html).
+export default tseslint.config({
+  extends: [
+    // other configs...
+    // Enable lint rules for React
+    reactX.configs['recommended-typescript'],
+    // Enable lint rules for React DOM
+    reactDom.configs.recommended,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```
