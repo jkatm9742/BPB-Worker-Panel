@@ -4,14 +4,16 @@ import { FileList } from '../components/FileList';
 import { MergeConfig } from '../components/MergeConfig';
 import { DataPreview } from '../components/DataPreview';
 import { AnalysisResults } from '../components/AnalysisResults';
-import { DataCharts } from '../components/DataCharts';
 import { useExcelStore } from '../store/useExcelStore';
-import { Trash2, Database, Sparkles } from 'lucide-react';
+import { Trash2, Database, BarChart3, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const clearAll = useExcelStore(state => state.clearAll);
   const files = useExcelStore(state => state.files);
   const mergedData = useExcelStore(state => state.mergedData);
+  const analysisResults = useExcelStore(state => state.analysisResults);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
@@ -45,6 +47,19 @@ export default function Home() {
             </div>
             <div className="space-y-6">
               <MergeConfig />
+              
+              {/* 数据分析导航按钮 */}
+              {analysisResults.length > 0 && (
+                <button
+                  onClick={() => navigate('/analysis')}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25"
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  进入数据分析中心
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              )}
+              
               {files.length > 0 && (
                 <button
                   onClick={clearAll}
@@ -56,13 +71,6 @@ export default function Home() {
               )}
             </div>
           </div>
-
-          {/* Charts Section - First to show visualizations */}
-          {mergedData && (
-            <div className="animate-fade-in">
-              <DataCharts />
-            </div>
-          )}
 
           {/* Preview Section */}
           <DataPreview />
